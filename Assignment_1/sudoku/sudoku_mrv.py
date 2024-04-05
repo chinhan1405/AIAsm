@@ -1,0 +1,48 @@
+from sudoku import Sudoku
+import time
+INPUT_FILE = "input1.txt"
+
+
+def available(sudoku: Sudoku, i: int, j: int) -> list:
+    available = []
+    for value in range(1, sudoku.get_dim() + 1):
+        sudoku.set(i, j, value)
+        if sudoku.valid():
+            available.append(value)
+        sudoku.set(i, j, 0)
+    return available
+
+def get_best_square(sudoku: Sudoku) -> tuple:
+    min_len = sudoku.get_dim() * 3
+    min_i = 0
+    min_j = 0
+    for i in range(sudoku.get_dim()):
+        for j in range(sudoku.get_dim()):
+            if sudoku.get(i, j) == 0:
+                if len(available(sudoku, i, j)) < min_len:
+                    min_len = len(available(sudoku, i, j))
+                    min_i = i
+                    min_j = j
+    return (min_i, min_j)
+                
+
+def sudoku_minimum_remaining_values(sudoku: Sudoku):
+    if sudoku.check():
+        print(sudoku)
+        return True
+    min_i, min_j = get_best_square(sudoku)
+    if min_i == 0 and min_j == 0:
+        return False
+    for value in available(sudoku, min_i, min_j):
+        sudoku.set(min_i, min_j, value)
+        if sudoku_minimum_remaining_values(sudoku):
+            return True
+        sudoku.set(min_i, min_j, 0)
+    return False
+
+if __name__ == "__main__":
+    start_time = time.time() # Start timer
+    sudoku = Sudoku(INPUT_FILE)
+    print(sudoku_minimum_remaining_values(sudoku))
+
+    print("--- %s seconds ---" % (time.time() - start_time))
