@@ -10,12 +10,12 @@ class Kakurasu:
     def get_dim(self):
         return self.dim
     
-    def get_rows_goal(self, i=None):
+    def get_row_goal(self, i=None):
         if i is None:
             return self.rows
         return self.rows[i]
     
-    def get_cols_goal(self, j=None):
+    def get_col_goal(self, j=None):
         if j is None:
             return self.cols
         return self.cols[j]
@@ -41,21 +41,37 @@ class Kakurasu:
     def get_col_sum(self, j):
         return sum([cell*(i+1) for i, cell in enumerate([row[j] for row in self.table])])
 
+    def count_black(self):
+        count = 0
+        for i in range(self.dim):
+            for j in range(self.dim):
+                if self.is_black(i, j):
+                    count += 1
+        return count
+
+    def count_white(self):
+        return self.dim*self.dim - self.count_black()
+
     def check(self):
         for i in range(self.dim):
-            if self.get_row_sum(i) != self.get_rows_goal(i):
+            if self.get_row_sum(i) != self.get_row_goal(i):
                 return False
-            if self.get_col_sum(i) != self.get_cols_goal(i):
+            if self.get_col_sum(i) != self.get_col_goal(i):
                 return False
         return True
     
     def valid(self):
         for i in range(self.dim):
-            if self.get_row_sum(i) > self.get_rows_goal(i):
+            if self.get_row_sum(i) > self.get_row_goal(i):
                 return False
-            if self.get_col_sum(i) > self.get_cols_goal(i):
+            if self.get_col_sum(i) > self.get_col_goal(i):
                 return False
         return True
+    
+    def clear(self):
+        for i in range(self.dim):
+            for j in range(self.dim):
+                self.set_white(i, j)
 
     def __str__(self) -> str:
         out = ""

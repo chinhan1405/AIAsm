@@ -1,6 +1,4 @@
-import time
 from kakurasu import Kakurasu
-INPUTFILE = "input6.txt"
 
 def kakurasu_depth_first_search(kakurasu: Kakurasu):
     if kakurasu.check():
@@ -17,6 +15,7 @@ def kakurasu_depth_first_search(kakurasu: Kakurasu):
     return False
 
 def kakurasu_dfs_step_by_step(kakurasu: Kakurasu):
+    # This function will print the current state of the kakurasu board at each step
     if kakurasu.check():
         return True
     for i in range(kakurasu.get_dim()):
@@ -32,6 +31,8 @@ def kakurasu_dfs_step_by_step(kakurasu: Kakurasu):
     return False
 
 if __name__ == "__main__":
+    import time
+    INPUTFILE = "testcase/input3.txt"
     start_time = time.time() # Start timer
     kakurasu = Kakurasu(INPUTFILE)
     kakurasu_depth_first_search(kakurasu)

@@ -1,7 +1,4 @@
 from sudoku import Sudoku
-import time
-INPUT_FILE = "input1.txt"
-
 
 def available(sudoku: Sudoku, i: int, j: int) -> list:
     available = []
@@ -14,8 +11,8 @@ def available(sudoku: Sudoku, i: int, j: int) -> list:
 
 def get_best_square(sudoku: Sudoku) -> tuple:
     min_len = sudoku.get_dim() * 3
-    min_i = 0
-    min_j = 0
+    min_i = -1
+    min_j = -1
     for i in range(sudoku.get_dim()):
         for j in range(sudoku.get_dim()):
             if sudoku.get(i, j) == 0:
@@ -31,7 +28,7 @@ def sudoku_minimum_remaining_values(sudoku: Sudoku):
         print(sudoku)
         return True
     min_i, min_j = get_best_square(sudoku)
-    if min_i == 0 and min_j == 0:
+    if min_i == -1 and min_j == -1:
         return False
     for value in available(sudoku, min_i, min_j):
         sudoku.set(min_i, min_j, value)
@@ -40,9 +37,25 @@ def sudoku_minimum_remaining_values(sudoku: Sudoku):
         sudoku.set(min_i, min_j, 0)
     return False
 
+def sudoku_mrv_step_by_step(sudoku: Sudoku):
+    # This function will print the current state of the sudoku board at each step
+    if sudoku.check():
+        return True
+    min_i, min_j = get_best_square(sudoku)
+    if min_i == -1 and min_j == -1:
+        return False
+    for value in available(sudoku, min_i, min_j):
+        sudoku.set(min_i, min_j, value)
+        print(sudoku)
+        if sudoku_mrv_step_by_step(sudoku):
+            return True
+        sudoku.set(min_i, min_j, 0)
+    return False
+
 if __name__ == "__main__":
+    import time
+    INPUT_FILE = "testcase/input4.txt"
     start_time = time.time() # Start timer
     sudoku = Sudoku(INPUT_FILE)
-    print(sudoku_minimum_remaining_values(sudoku))
-
+    sudoku_mrv_step_by_step(sudoku)
     print("--- %s seconds ---" % (time.time() - start_time))

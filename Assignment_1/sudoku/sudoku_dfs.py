@@ -1,6 +1,4 @@
 from sudoku import Sudoku
-import time
-INPUT_FILE = "input2.txt"
 
 def sudoku_depth_first_search(sudoku: Sudoku):
     if sudoku.check():
@@ -18,6 +16,7 @@ def sudoku_depth_first_search(sudoku: Sudoku):
     return False
 
 def sudoku_dfs_step_by_step(sudoku: Sudoku):
+    # This function will print the current state of the sudoku board at each step
     if sudoku.check():
         return True
     for i in range(sudoku.get_dim()):
@@ -34,6 +33,8 @@ def sudoku_dfs_step_by_step(sudoku: Sudoku):
     return False
 
 if __name__ == "__main__":
+    import time
+    INPUT_FILE = "testcase/input1.txt"
     start_time = time.time() # Start timer
     sudoku = Sudoku(INPUT_FILE)
     sudoku_depth_first_search(sudoku)
