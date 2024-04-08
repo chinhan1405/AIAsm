@@ -1,5 +1,7 @@
 from sudoku import Sudoku
 
+counter = 0
+
 def available(sudoku: Sudoku, i: int, j: int) -> list:
     available = []
     for value in range(1, sudoku.get_dim() + 1):
@@ -54,8 +56,8 @@ def sudoku_mrv_step_by_step(sudoku: Sudoku):
 
 if __name__ == "__main__":
     import time
-    INPUT_FILE = "testcase/input4.txt"
+    INPUT_FILE = "testcase/input2.txt"
     start_time = time.time() # Start timer
     sudoku = Sudoku(INPUT_FILE)
-    sudoku_mrv_step_by_step(sudoku)
+    sudoku_minimum_remaining_values(sudoku)
     print("--- %s seconds ---" % (time.time() - start_time))
