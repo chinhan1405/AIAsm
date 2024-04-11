@@ -1,39 +1,63 @@
 from kakurasu import Kakurasu
+from copy import deepcopy
 
-def kakurasu_depth_first_search(kakurasu: Kakurasu):
-    if kakurasu.check():
-        print(kakurasu)
-        return True
-    for i in range(kakurasu.get_dim()):
-        for j in range(kakurasu.get_dim()):
-            if not kakurasu.is_black(i, j):
-                kakurasu.set_black(i, j)
-                if (kakurasu.valid()):
-                    if kakurasu_depth_first_search(kakurasu):
-                        return True
-                kakurasu.set_white(i, j)
+def kakurasu_depth_first_search(kakurasu: Kakurasu) -> bool:
+    visited:list[Kakurasu] = []
+    stack:list[Kakurasu] = []
+    stack.append(kakurasu)
+    while stack:
+        current:Kakurasu = stack.pop()
+        if current.check():
+            print(current)
+            return True
+        visited.append(current)
+        for i in range(current.get_dim())[::-1]:
+            for j in range(current.get_dim())[::-1]:
+                if not current.is_black(i, j):
+                    new_kakurasu:Kakurasu = deepcopy(current)
+                    new_kakurasu.set_black(i, j)
+                    if new_kakurasu.valid() \
+                    and new_kakurasu not in visited:
+                        stack.append(new_kakurasu)
     return False
 
-def kakurasu_dfs_step_by_step(kakurasu: Kakurasu):
+def kakurasu_dfs_step_by_step(kakurasu: Kakurasu) -> bool:
     # This function will print the current state of the kakurasu board at each step
-    if kakurasu.check():
-        return True
-    for i in range(kakurasu.get_dim()):
-        for j in range(kakurasu.get_dim()):
-            if not kakurasu.is_black(i, j):
-                kakurasu.set_black(i, j)
-                print(kakurasu)
-                print()
-                if (kakurasu.get_row_sum(i) <= kakurasu.get_rows(i)) and (kakurasu.get_col_sum(j) <= kakurasu.get_cols(j)):
-                    if kakurasu_dfs_step_by_step(kakurasu):
-                        return True
-                kakurasu.set_white(i, j)
+    visited:list[Kakurasu] = []
+    stack:list[Kakurasu] = []
+    stack.append(kakurasu)
+    while stack:
+        current:Kakurasu = stack.pop()
+        print(current)
+        print()
+        if current.check():
+            return True
+        visited.append(current)
+        for i in range(current.get_dim())[::-1]:
+            for j in range(current.get_dim())[::-1]:
+                if not current.is_black(i, j):
+                    new_kakurasu:Kakurasu = deepcopy(current)
+                    new_kakurasu.set_black(i, j)
+                    if new_kakurasu.valid() \
+                    and new_kakurasu not in visited:
+                        stack.append(new_kakurasu)
+                        
     return False
 
 if __name__ == "__main__":
     import time
+    import tracemalloc
     INPUTFILE = "testcase/input3.txt"
-    start_time = time.time() # Start timer
+    tracemalloc.start()
+    start_time = time.time()
+
     kakurasu = Kakurasu(INPUTFILE)
-    kakurasu_depth_first_search(kakurasu)
-    print("--- %s seconds ---" % (time.time() - start_time))
+    if kakurasu_depth_first_search(kakurasu):
+        print("Solved!")
+    else:
+        print("No solution!")
+
+    print("--- Time consumed: %s seconds ---" % (time.time() - start_time))
+    print("--- Memory used: ", tracemalloc.get_traced_memory(), " ---")
+
+    tracemalloc.stop()

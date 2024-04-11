@@ -62,10 +62,13 @@ if __name__ == "__main__":
     start_time = time.time() # Start timer
 
     sudoku = Sudoku(INPUT_FILE)
-    sudoku_minimum_remaining_values(sudoku)
+    if sudoku_minimum_remaining_values(sudoku):
+        print("Solved!")
+    else:
+        print("No solution!")
 
-    print("--- %s seconds ---" % (time.time() - start_time))
-    print("Memory used: ", tracemalloc.get_traced_memory())
+    print("--- Time consumed: %s seconds ---" % (time.time() - start_time))
+    print("--- Memory used: ", tracemalloc.get_traced_memory(), " ---")
 
     tracemalloc.stop()
 

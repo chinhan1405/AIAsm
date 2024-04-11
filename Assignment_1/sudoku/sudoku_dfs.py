@@ -2,11 +2,11 @@ from sudoku import Sudoku
 from copy import deepcopy
 
 def sudoku_depth_first_search(sudoku: Sudoku) -> bool:
-    visited = []
-    stack = []
+    visited:list[Sudoku] = []
+    stack:list[Sudoku] = []
     stack.append(sudoku)
     while stack:
-        current = stack.pop()
+        current:Sudoku = stack.pop()
         if current.check():
             print(current)
             return True
@@ -24,13 +24,13 @@ def sudoku_depth_first_search(sudoku: Sudoku) -> bool:
 
 def sudoku_dfs_step_by_step(sudoku: Sudoku) -> bool:
     # This function will print the current state of the sudoku board at each step
-    visited = []
-    stack = []
+    visited:list[Sudoku] = []
+    stack:list[Sudoku] = []
     stack.append(sudoku)
     while stack:
         current:Sudoku = stack.pop()
+        print(current)
         if current.check():
-            print(current)
             return True
         visited.append(current)
         for i in range(current.get_dim()):
@@ -42,7 +42,6 @@ def sudoku_dfs_step_by_step(sudoku: Sudoku) -> bool:
                         if new_sudoku.valid() \
                         and new_sudoku not in visited:
                             stack.append(new_sudoku)
-                            print(new_sudoku)
     return False
 
 
@@ -54,9 +53,12 @@ if __name__ == "__main__":
     start_time = time.time()
 
     sudoku = Sudoku(INPUT_FILE)
-    sudoku_depth_first_search(sudoku)
+    if sudoku_depth_first_search(sudoku):
+        print("Solved!")
+    else:
+        print("No solution!")
 
-    print("--- %s seconds ---" % (time.time() - start_time))
-    print("Memory used: ", tracemalloc.get_traced_memory())
+    print("--- Time consumed: %s seconds ---" % (time.time() - start_time))
+    print("--- Memory used: ", tracemalloc.get_traced_memory(), " ---")
     
     tracemalloc.stop()

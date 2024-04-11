@@ -1,5 +1,6 @@
 class Kakurasu:
     def __init__(self, input_file) -> None:
+        '''Initialize the Kakurasu board from the input file'''
         f = open(input_file, "r")
         self.dim = int(f.readline())
         self.rows = [int(x) for x in f.readline().split(" ")]
@@ -7,41 +8,54 @@ class Kakurasu:
         f.close()
         self.table = [[0 for i in range(self.dim)] for j in range(self.dim)]
 
-    def get_dim(self):
+    def get_dim(self) -> int:
+        '''Return the dimension of the board'''
         return self.dim
     
-    def get_row_goal(self, i=None):
+    def get_row_goal(self, i:int=None) -> int | list[int]:
+        '''Return the goal of the i-th row
+        If i is None, return all the goals of the rows'''
         if i is None:
             return self.rows
         return self.rows[i]
     
-    def get_col_goal(self, j=None):
+    def get_col_goal(self, j:int=None) -> int | list[int]:
+        '''Return the goal of the j-th column
+        If j is None, return all the goals of the columns'''
         if j is None:
             return self.cols
         return self.cols[j]
     
-    def get_rows(self, i):
+    def get_rows(self, i:int) -> list[int]:
+        '''Return the i-th row of the board'''
         return self.table[i]
     
-    def get_cols(self, j):
+    def get_cols(self, j:int) -> list[int]:
+        '''Return the j-th column of the board'''
         return [row[j] for row in self.table]
 
-    def set_black(self, i, j):
+    def set_black(self, i:int, j:int) -> None:
+        '''Set the cell at position (i, j) to black (value 1)'''
         self.table[i][j] = 1
 
-    def set_white(self, i, j):
+    def set_white(self, i:int, j:int) -> None:
+        '''Set the cell at position (i, j) to white (value 0)'''
         self.table[i][j] = 0
 
-    def is_black(self, i, j):
+    def is_black(self, i:int, j:int) -> bool:
+        '''Check if the cell at position (i, j) is black (value 1)'''
         return self.table[i][j] == 1
     
-    def get_row_sum(self, i):
+    def get_row_sum(self, i:int) -> int:
+        '''Return the sum of the i-th row'''
         return sum([cell*(j+1) for j, cell in enumerate(self.table[i])])
     
-    def get_col_sum(self, j):
+    def get_col_sum(self, j:int) -> int:
+        '''Return the sum of the j-th column'''
         return sum([cell*(i+1) for i, cell in enumerate([row[j] for row in self.table])])
 
-    def count_black(self):
+    def count_black(self) -> int:
+        '''Return the number of black cells in the board'''
         count = 0
         for i in range(self.dim):
             for j in range(self.dim):
@@ -49,10 +63,12 @@ class Kakurasu:
                     count += 1
         return count
 
-    def count_white(self):
+    def count_white(self) -> int:
+        '''Return the number of white cells in the board'''
         return self.dim*self.dim - self.count_black()
 
-    def check(self):
+    def check(self) -> bool:
+        '''Check if the board is a valid solution'''
         for i in range(self.dim):
             if self.get_row_sum(i) != self.get_row_goal(i):
                 return False
@@ -60,7 +76,8 @@ class Kakurasu:
                 return False
         return True
     
-    def valid(self):
+    def valid(self) -> bool:
+        '''Check if the board is valid (not violate the Kakurasu rules)'''
         for i in range(self.dim):
             if self.get_row_sum(i) > self.get_row_goal(i):
                 return False
@@ -68,7 +85,8 @@ class Kakurasu:
                 return False
         return True
     
-    def clear(self):
+    def clear(self) -> None:
+        '''Clear the board'''
         for i in range(self.dim):
             for j in range(self.dim):
                 self.set_white(i, j)
@@ -90,5 +108,6 @@ class Kakurasu:
     
 
 if __name__ == "__main__":
-    k = Kakurasu("input.txt")
+    # Test the Kakurasu class
+    k = Kakurasu("testcase/input1.txt")
     print(k)    
