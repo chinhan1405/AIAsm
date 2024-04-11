@@ -1,8 +1,7 @@
 from sudoku import Sudoku
 
-counter = 0
-
 def available(sudoku: Sudoku, i: int, j: int) -> list:
+    '''Return the available values for the square (i, j) in the board'''
     available = []
     for value in range(1, sudoku.get_dim() + 1):
         sudoku.set(i, j, value)
@@ -12,6 +11,7 @@ def available(sudoku: Sudoku, i: int, j: int) -> list:
     return available
 
 def get_best_square(sudoku: Sudoku) -> tuple:
+    '''Return the square with the minimum number of available values'''
     min_len = sudoku.get_dim() * 3
     min_i = -1
     min_j = -1
@@ -24,8 +24,7 @@ def get_best_square(sudoku: Sudoku) -> tuple:
                     min_j = j
     return (min_i, min_j)
                 
-
-def sudoku_minimum_remaining_values(sudoku: Sudoku):
+def sudoku_minimum_remaining_values(sudoku: Sudoku) -> bool:
     if sudoku.check():
         print(sudoku)
         return True
@@ -39,7 +38,7 @@ def sudoku_minimum_remaining_values(sudoku: Sudoku):
         sudoku.set(min_i, min_j, 0)
     return False
 
-def sudoku_mrv_step_by_step(sudoku: Sudoku):
+def sudoku_mrv_step_by_step(sudoku: Sudoku) -> bool:
     # This function will print the current state of the sudoku board at each step
     if sudoku.check():
         return True
@@ -54,10 +53,19 @@ def sudoku_mrv_step_by_step(sudoku: Sudoku):
         sudoku.set(min_i, min_j, 0)
     return False
 
+
 if __name__ == "__main__":
     import time
+    import tracemalloc
     INPUT_FILE = "testcase/input2.txt"
+    tracemalloc.start()
     start_time = time.time() # Start timer
+
     sudoku = Sudoku(INPUT_FILE)
     sudoku_minimum_remaining_values(sudoku)
+
     print("--- %s seconds ---" % (time.time() - start_time))
+    print("Memory used: ", tracemalloc.get_traced_memory())
+
+    tracemalloc.stop()
+

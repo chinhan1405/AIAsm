@@ -2,27 +2,34 @@ from math import sqrt
 
 class Sudoku:
     def __init__(self, input_file) -> None:
+        '''Initialize the Sudoku board from the input file'''
         f = open(input_file, "r")
         self.dim = int(f.readline())
         self.board = [[int(x) for x in line.split(" ")] for line in f.readlines()]
         f.close()
 
-    def get_dim(self):
+    def get_dim(self) -> int:
+        '''Return the dimension of the board'''
         return self.dim
 
-    def get(self, i, j) -> int:
+    def get(self, i:int, j:int) -> int:
+        '''Return the value at position (i, j)'''
         return self.board[i][j]
     
-    def set(self, i, j, value):
+    def set(self, i:int, j:int, value:int) -> None:
+        '''Set the value at position (i, j)'''
         self.board[i][j] = value
 
-    def get_row(self, i) -> list:
+    def get_row(self, i:int) -> list:
+        '''Return the i-th row of the board'''
         return self.board[i]
     
-    def get_col(self, j) -> list:
+    def get_col(self, j:int) -> list:
+        '''Return the j-th column of the board'''
         return [row[j] for row in self.board]
     
-    def get_box(self, i, j) -> list:
+    def get_box(self, i:int, j:int) -> list:
+        '''Return the box that contains the position (i, j)'''
         box = []
         dim = int(sqrt(self.dim))
         i = i // dim * dim
@@ -32,7 +39,8 @@ class Sudoku:
                 box.append(self.get(x, y))
         return box
     
-    def valid(self):
+    def valid(self) -> bool:
+        '''Check if the board is valid (not violate the Sudoku rules)'''
         for i in range(self.dim):
             for j in range(self.dim):
                 if self.get(i, j) != 0:
@@ -44,7 +52,8 @@ class Sudoku:
                         return False
         return True
     
-    def check(self):
+    def check(self) -> bool:
+        '''Check if the board is a valid solution'''
         sum_ = self.dim * (self.dim + 1) // 2
         for i in range(self.dim):
             if sum(self.get_row(i)) != sum_:
@@ -72,5 +81,6 @@ class Sudoku:
     
 
 if __name__ == "__main__":
-    sudoku = Sudoku("input1.txt")
+    # Test the Sudoku class
+    sudoku = Sudoku("testcase/input1.txt")
     print(sudoku)
