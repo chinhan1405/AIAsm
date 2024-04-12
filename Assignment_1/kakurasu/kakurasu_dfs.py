@@ -58,6 +58,6 @@ if __name__ == "__main__":
         print("No solution!")
 
     print("--- Time consumed: %s seconds ---" % (time.time() - start_time))
-    print("--- Memory used: ", tracemalloc.get_traced_memory(), " ---")
+    print("--- Memory used: %s bytes ---" % (tracemalloc.get_traced_memory()[1]))
 
     tracemalloc.stop()

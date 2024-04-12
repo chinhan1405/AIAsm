@@ -53,12 +53,13 @@ if __name__ == "__main__":
     start_time = time.time()
 
     sudoku = Sudoku(INPUT_FILE)
+    print(sudoku)
     if sudoku_depth_first_search(sudoku):
         print("Solved!")
     else:
         print("No solution!")
 
     print("--- Time consumed: %s seconds ---" % (time.time() - start_time))
-    print("--- Memory used: ", tracemalloc.get_traced_memory(), " ---")
+    print("--- Memory used: %s bytes ---" % (tracemalloc.get_traced_memory()[1]))
     
     tracemalloc.stop()

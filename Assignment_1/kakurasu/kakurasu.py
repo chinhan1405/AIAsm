@@ -106,6 +106,11 @@ class Kakurasu:
             return False
         return self.table == __value.table
     
+    def __lt__(self, __value: object) -> bool:
+        if not isinstance(__value, Kakurasu):
+            return False
+        return self.count_black() < __value.count_black()
+    
 
 if __name__ == "__main__":
     # Test the Kakurasu class
