@@ -47,14 +47,13 @@ def sudoku_dfs_step_by_step(sudoku: Sudoku) -> bool:
 
 if __name__ == "__main__":
     import time
-    INPUT_FILE = "testcase/input1.txt"
+    INPUT_FILE = "testcase/input2.txt"
     import tracemalloc
     tracemalloc.start()
     start_time = time.time()
 
     sudoku = Sudoku(INPUT_FILE)
-    print(sudoku)
-    if sudoku_depth_first_search(sudoku):
+    if sudoku_dfs_step_by_step(sudoku):
         print("Solved!")
     else:
         print("No solution!")

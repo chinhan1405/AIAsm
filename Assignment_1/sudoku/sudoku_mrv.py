@@ -57,7 +57,7 @@ def sudoku_mrv_step_by_step(sudoku: Sudoku) -> bool:
 if __name__ == "__main__":
     import time
     import tracemalloc
-    INPUT_FILE = "testcase/input2.txt"
+    INPUT_FILE = "testcase/input5.txt"
     tracemalloc.start()
     start_time = time.time() # Start timer
 

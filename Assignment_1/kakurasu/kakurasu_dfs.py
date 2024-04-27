@@ -52,7 +52,7 @@ if __name__ == "__main__":
     start_time = time.time()
 
     kakurasu = Kakurasu(INPUTFILE)
-    if kakurasu_depth_first_search(kakurasu):
+    if kakurasu_dfs_step_by_step(kakurasu):
         print("Solved!")
     else:
         print("No solution!")

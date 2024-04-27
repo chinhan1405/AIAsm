@@ -1,4 +1,5 @@
 from kakurasu import Kakurasu
+from copy import deepcopy
 import math
 
 def get_combinations(elems:list[int], sum:int) -> list[list[int]]:
@@ -40,65 +41,59 @@ def get_promised_solutions(kakurasu:Kakurasu) -> bool:
             clear_row(kakurasu, i)
     return solutions
 
-def get_best_row(kakurasu:Kakurasu, solutions:list[list[list[int]]]) -> int:
-    '''Get the row with the least number of possible solutions'''
-    min_solutions = math.inf
-    best_row = -1
-    for i in range(kakurasu.get_dim()):
-        if kakurasu.get_row_sum(i) == 0:
-            if len(solutions[i]) < min_solutions:
-                min_solutions = len(solutions[i])
-                best_row = i
-    return best_row
-
-def kakurasu_minimum_remaining_values(kakurasu: Kakurasu):
+def kakurasu_depth_first_search(kakurasu:Kakurasu) -> bool:
     solutions = get_promised_solutions(kakurasu)
-    def backtrack(kakurasu: Kakurasu):
-        if kakurasu.check():
-            print(kakurasu)
+    stack:list[Kakurasu] = []
+    visited:list[Kakurasu] = []
+    stack.append(kakurasu)
+    while stack:
+        current:Kakurasu = stack.pop()
+        if current.check():
+            print(current)
             return True
-        row = get_best_row(kakurasu, solutions)
-        if row == -1:
-            return False
-        for comb in solutions[row]:
-            set_row_black_from_combination(kakurasu, comb, row)
-            if kakurasu.valid():
-                if backtrack(kakurasu):
-                    return True
-            clear_row(kakurasu, row)
-        return False
-    return backtrack(kakurasu)
+        visited.append(current)
+        for i in range(current.get_dim())[::-1]:
+            for comb in solutions[i]:
+                new_kakurasu:Kakurasu = deepcopy(current)
+                set_row_black_from_combination(new_kakurasu, comb, i)
+                if new_kakurasu.valid() \
+                and new_kakurasu not in visited:
+                    stack.append(new_kakurasu)
+    return False
 
-def kakurasu_mrv_step_by_step(kakurasu: Kakurasu) -> bool:
+def kakurasu_dfs_step_by_step(kakurasu:Kakurasu) -> bool:
     '''This function will print the current state of the kakurasu board at each step'''
     solutions = get_promised_solutions(kakurasu)
-    def backtrack(kakurasu: Kakurasu):
-        if kakurasu.check():
+    stack:list[Kakurasu] = []
+    visited:list[Kakurasu] = []
+    stack.append(kakurasu)
+    while stack:
+        current:Kakurasu = stack.pop()
+        print(current)
+        print()
+        if current.check():
             return True
-        row = get_best_row(kakurasu, solutions)
-        if row == -1:
-            return False
-        for comb in solutions[row]:
-            set_row_black_from_combination(kakurasu, comb, row)
-            print(kakurasu)
-            print()
-            if kakurasu.valid():
-                if backtrack(kakurasu):
-                    return True
-            clear_row(kakurasu, row)
-    return backtrack(kakurasu)
-    
+        visited.append(current)
+        for i in range(current.get_dim())[::-1]:
+            for comb in solutions[i]:
+                new_kakurasu:Kakurasu = deepcopy(current)
+                set_row_black_from_combination(new_kakurasu, comb, i)
+                if new_kakurasu.valid() \
+                and new_kakurasu not in visited:
+                    stack.append(new_kakurasu)
+    return False
+
 
 if __name__ == '__main__':
     import time
     import tracemalloc
-    INPUT_FILE = "testcase/input7.txt"
+    INPUT_FILE = "testcase/input3.txt"
     tracemalloc.start()
     start_time = time.time()
     
     kakurasu = Kakurasu(INPUT_FILE)
     print(get_promised_solutions(kakurasu))
-    if kakurasu_mrv_step_by_step(kakurasu):
+    if kakurasu_dfs_step_by_step(kakurasu):
         print("Solved!")
     else:
         print("No solution!")
