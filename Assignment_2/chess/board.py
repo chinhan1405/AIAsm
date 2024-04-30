@@ -129,6 +129,28 @@ class Board:
                     return True
         return False
     
+    def aimed_by(self, i:int, j:int, color:str) -> list[Piece]:
+        '''Get the pieces aiming at a square.
+        
+        Args:
+            i (int): The row of the square.
+            j (int): The column of the square.
+            color (str): The color of the side.
+
+        Returns:
+            list[Piece]: A list of pieces aiming at the square.
+        '''
+        pieces = []
+        if color == "w":
+            for piece in self.white_pieces:
+                if (i, j) in piece.available_captures(self):
+                    pieces.append(piece)
+        else:
+            for piece in self.black_pieces:
+                if (i, j) in piece.available_captures(self):
+                    pieces.append(piece)
+        return pieces
+
     def force_move(self, i1:int, j1:int, i2:int, j2:int, promote:str) -> None:
         '''Force a move on the board.
         

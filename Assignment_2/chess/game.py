@@ -10,6 +10,7 @@ class ChessGame:
         self.turn = "w"
         self.turn_num = 0
         self.bot = None
+        self.game_history = []
     
     def __str__(self):
         string = str(self.board) + "\n"
@@ -35,6 +36,19 @@ class ChessGame:
         else:
             self.turn = "w"
     
+    def add_to_history(self):
+        '''Add current board to history.'''
+        self.game_history.append(self.board)
+        self.board = self.board.create_board_copy()
+
+    def pop_from_history(self):
+        return self.game_history.pop()
+
+    def undo(self):
+        '''Return the current board to the previous situation.'''
+        if self.game_history:
+            self.board = self.game_history.pop()
+
     def move(self, i1, j1, i2, j2, promote:str) -> bool:
         '''Check if a move is valid and make it on the board.
         
@@ -49,9 +63,11 @@ class ChessGame:
             bool: True if the move is valid and made, False otherwise.
         '''
         if self.board.board[i1][j1].color == self.turn:
-            self.board.move(i1, j1, i2, j2, promote)
-            self.switch_turn()
-            return True
+            if self.board.move(i1, j1, i2, j2, promote):
+                self.switch_turn()
+                return True
+            else:
+                return False
         else:
             return False
         
@@ -83,33 +99,15 @@ class ChessGame:
         self.player_side = input("Choose side (w/b): ")
         while not self.player_side == "w" and not self.player_side == "b":
             self.player_side = input("Wrong format. Please choose again (w/b): ")
-        bot_level = input("Choose bot level (1/2/3): ")
-        while not bot_level == "1" and not bot_level == "2" and not bot_level == "3":
-            bot_level = input("Wrong format. Please choose again (1/2/3): ")
+        bot_level = input("Choose bot level (1-5): ")
+        while not len(bot_level) == 1  and bot_level not in "12345":
+            bot_level = input("Wrong format. Please choose again (1-5): ")
         bot_level = int(bot_level)
         self.init_bot(bot_level, "w" if self.player_side == "b" else "b")
-        # Init screen
-        os.system("cls")
-        print(self.board)
         # Game loop
         while True:
-            if self.turn == self.player_side:
-                move = input("Enter move: ")
-                if move == "exit":
-                    break
-                elif move[0] == "i" and len(move) == 3:
-                    info = self.board.get_info(move[1:])
-                    if info:
-                        print(info)
-                    continue
-                if not self.move_by_string(move):
-                    continue
-            else:
-                move = self.bot.best_move(self.board, self.turn_num)
-                self.move(*move, "Q")
-            if self.turn == "b":
-                self.turn_num += 1
-            os.system("cls")
+            # os.system("cls")
+            print(len(self.game_history))
             print(self.board)
             result = self.board.match_result()
             if result == 1:
@@ -121,6 +119,34 @@ class ChessGame:
             elif result == 3:
                 print("Draw")
                 break
+            if self.turn == self.player_side:
+                move = input("Enter move: ")
+                if move == "exit":
+                    break
+                elif move == "lose":
+                    if self.turn == "w":
+                        print("Black wins")
+                    else:
+                        print("White wins")
+                    break
+                elif move == "undo":
+                    self.undo()
+                    continue
+                elif move[0] == "i" and len(move) == 3:
+                    info = self.board.get_info(move[1:])
+                    if info:
+                        print(info)
+                    continue
+                self.add_to_history()
+                if not self.move_by_string(move):
+                    self.pop_from_history()
+                    continue
+            else:
+                move = self.bot.best_move(self.board, self.turn_num)
+                self.move(*move, "Q")
+            if self.turn == "b":
+                self.turn_num += 1
+            
 
 
 if __name__ == "__main__":

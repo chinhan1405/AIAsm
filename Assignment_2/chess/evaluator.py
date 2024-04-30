@@ -153,7 +153,122 @@ class ChessEvaluator:
         King:MIDGAME_KING_PSQT
     }
 
+    PIECE_VALUES = {
+        Pawn:100,
+        Knight:300,
+        Bishop:300,
+        Rook:500,
+        Queen:900,
+        King:0
+    }
+
     @staticmethod
+
+    def check_bias(board:Board) -> int:
+        '''Check if the board has a bias towards one side.
+        
+        Args:
+            board (Board): The board to check.
+
+        Returns:
+            int: The bias of the board.
+        '''
+        if board.is_check("w"):
+            return -30
+        elif board.is_check("b"):
+            return 30
+        return 0
+    
+    def piece_value_bias(board:Board) -> int:
+        '''Check if the board has a bias towards one side.
+        
+        Args:
+            board (Board): The board to check.
+
+        Returns:
+            int: The bias of the board.
+        '''
+        value = 0
+        for piece in board.white_pieces:
+            value += ChessEvaluator.PIECE_VALUES[type(piece)]
+        for piece in board.black_pieces:
+            value -= ChessEvaluator.PIECE_VALUES[type(piece)]
+        return value
+    
+    def piece_square_value_bias(board:Board, turn_num:int) -> int:
+        '''Check if the board has a bias towards one side.
+        
+        Args:
+            board (Board): The board to check.
+
+        Returns:
+            int: The bias of the board.
+        '''
+        value = 0
+        psqt = ChessEvaluator.MIDGAME_PSQT
+        if turn_num > 24:
+            psqt = ChessEvaluator.ENDGAME_PSQT
+        for piece in board.white_pieces:
+            value += psqt[type(piece)][::-1][piece.i][piece.j]
+        for piece in board.black_pieces:
+            value -= psqt[type(piece)][piece.i][piece.j]
+        return value
+    
+    def open_column_occupancy_bias(board:Board) -> int:
+        '''Check if the board has a bias towards one side.
+        
+        Args:
+            board (Board): The board to check.
+
+        Returns:
+            int: The bias of the board.
+        '''
+        value = 0
+        for i in range(8):
+            blank_count = 0
+            column_bias = 0
+            for j in range(8):
+                cell = board.board[j][i]
+                if cell == None:
+                    blank_count += 1
+                elif type(cell) in (Rook, Queen):
+                    if cell.color == "w":
+                        column_bias += 50
+                    else:
+                        column_bias -= 50
+            if blank_count >= 7:
+                value += column_bias
+        return value
+    
+    def threat_bias(board:Board, turn_num:int) -> int:
+        '''Check if the board has a bias towards one side.
+        
+        Args:
+            board (Board): The board to check.
+            turn_num (int): The turn number of the game.
+
+        Returns:
+            int: The bias of the board.
+        '''
+        if turn_num < 10:
+            return 0
+        def is_threatened(piece) -> bool:
+            opponents = board.aimed_by(piece.i, piece.j, "w" if piece.color == "b" else "b")
+            if len(opponents) == 0:
+                return False
+            opponent_point = sum([ChessEvaluator.PIECE_VALUES[type(piece)] for piece in opponents])
+            allies = board.aimed_by(piece.i, piece.j, piece.color)
+            ally_point = sum([ChessEvaluator.PIECE_VALUES[type(piece)] for piece in allies])
+            return opponent_point > ally_point
+        
+        value = 0
+        for piece in board.white_pieces:
+            if is_threatened(piece):
+                value -= 0.8 * ChessEvaluator.PIECE_VALUES[type(piece)]
+        for piece in board.black_pieces:
+            if is_threatened(piece):
+                value += 0.8 * ChessEvaluator.PIECE_VALUES[type(piece)]
+        return int(value)
     
     def evaluate(board:Board, turn_num:int) -> int:
         '''Evaluate the board based on the position of the pieces on the board.
@@ -171,14 +286,12 @@ class ChessEvaluator:
             return -10000
         elif board.match_result() == 3:
             return 0
+        # Add bias
         value = 0
-        psqt = ChessEvaluator.MIDGAME_PSQT
-        if turn_num > 24:
-            psqt = ChessEvaluator.ENDGAME_PSQT
-        for piece in board.white_pieces:
-            value += psqt[type(piece)][::-1][piece.i][piece.j]
-        for piece in board.black_pieces:
-            value -= psqt[type(piece)][piece.i][piece.j]
+        value += ChessEvaluator.check_bias(board)
+        value += ChessEvaluator.piece_value_bias(board)
+        value += ChessEvaluator.piece_square_value_bias(board, turn_num)
+        value += ChessEvaluator.threat_bias(board, turn_num)
         return value
 
 
