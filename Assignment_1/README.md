@@ -1,1 +1,3 @@
-*This project does not require any specific python library to run.
+# Information
+
+This project uses searching algorithms to play Kakurasu and Sudoku.
