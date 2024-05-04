@@ -4,6 +4,15 @@ You can run the Sudoku solver by running sudoku_dfs.py for DFS solution or sudok
 
 To solve a new Sudoku problems, please define it in a new input.txt file and put it into 'sudoku/testcase/' folder, and then adjust the INPUT_FILE constant in sudoku_dfs.py or sudoku_mrv.py to the path to your new Sudoku problems.
 
+DFS version:
+```
+    py sudoku_dfs.py
+```
+
+MRV version:
+```
+    py sudoku_mrv.py
+```
 
 # About (Vietnamese)
 
