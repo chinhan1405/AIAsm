@@ -5,12 +5,17 @@ You can run the Kakurasu solver by running kakurasu_dfs.py for DFS solution or k
 To solve a new Kakurasu problems, please define it in a new input.txt file and put it into 'kakurasu/testcase/' folder, and then adjust the INPUT_FILE constant in kakurasu_dfs.py or kakurasu_mrv.py to the path to your new Sudoku problems.
 
 DFS version:
+
 ```
     py kakurasu_dfs.py
+```
+
+```
     py kakurasu_dfs2.py
 ```
 
 MRV version:
+
 ```
     py kakurasu_mrv.py
 ```
