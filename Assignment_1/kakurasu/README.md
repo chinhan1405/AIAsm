@@ -7,17 +7,17 @@ To solve a new Kakurasu problems, please define it in a new input.txt file and p
 DFS version:
 
 ```
-    py kakurasu_dfs.py
+py kakurasu_dfs.py
 ```
 
 ```
-    py kakurasu_dfs2.py
+py kakurasu_dfs2.py
 ```
 
 MRV version:
 
 ```
-    py kakurasu_mrv.py
+py kakurasu_mrv.py
 ```
 
 

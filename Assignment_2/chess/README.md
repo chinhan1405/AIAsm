@@ -1,7 +1,7 @@
 # How to run
 
 ```
-    py game.py
+py game.py
 ```
 
 # Game played
