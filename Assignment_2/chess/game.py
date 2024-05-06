@@ -99,15 +99,15 @@ class ChessGame:
         self.player_side = input("Choose side (w/b): ")
         while not self.player_side == "w" and not self.player_side == "b":
             self.player_side = input("Wrong format. Please choose again (w/b): ")
-        bot_level = input("Choose bot level (1-5): ")
-        while not len(bot_level) == 1  and bot_level not in "12345":
-            bot_level = input("Wrong format. Please choose again (1-5): ")
+        bot_level = input("Choose bot level (1-3): ")
+        while not len(bot_level) == 1  and bot_level not in "123":
+            bot_level = input("Wrong format. Please choose again (1-3): ")
         bot_level = int(bot_level)
         self.init_bot(bot_level, "w" if self.player_side == "b" else "b")
         # Game loop
+        moves = []
         while True:
-            # os.system("cls")
-            print(len(self.game_history))
+            os.system("cls")
             print(self.board)
             result = self.board.match_result()
             if result == 1:
@@ -119,6 +119,8 @@ class ChessGame:
             elif result == 3:
                 print("Draw")
                 break
+            if self.turn == "w":
+                moves.append(str(self.turn_num) + '.')
             if self.turn == self.player_side:
                 move = input("Enter move: ")
                 if move == "exit":
@@ -130,6 +132,9 @@ class ChessGame:
                         print("White wins")
                     break
                 elif move == "undo":
+                    moves.pop()
+                    moves.pop()
+                    moves.pop()
                     self.undo()
                     continue
                 elif move[0] == "i" and len(move) == 3:
@@ -141,16 +146,79 @@ class ChessGame:
                 if not self.move_by_string(move):
                     self.pop_from_history()
                     continue
+                moves.append(move)
             else:
                 move = self.bot.best_move(self.board, self.turn_num)
+                moves.append(self.translate_move(move))
                 self.move(*move, "Q")
             if self.turn == "b":
                 self.turn_num += 1
-            
+        return ' '.join(moves)
+
+    def translate_move(self, move: tuple[int,int,int,int]) -> str:
+        '''Translate a move from a tuple to a string.
+        
+        Args:
+            move (tuple[int,int,int,int]): The move to translate.
+        
+        Returns:
+            str: The translated move.
+        '''
+        return f"{chr(move[1]+97)}{move[0]+1}{chr(move[3]+97)}{move[2]+1}"
+
+    def simulate_game(self, level: int, rand_side: int = 0):
+        '''Simulate a game between two bots.
+        
+        Args:
+            level (int): The level of the bots.
+            rand_side (int): Which side will make random moves (1 for white, 2 for black, 0 means non of them).
+
+        Returns:
+            str: The moves of the game.
+        '''
+        moves = []
+        bot1 = ChessBot(level, "w")
+        bot2 = ChessBot(level, "b")
+        while True:
+            os.system("cls")
+            print(self.board)
+            result = self.board.match_result()
+            if result == 1:
+                print("White wins")
+                moves.append('#')
+                break
+            elif result == 2:
+                moves.append('#')
+                print("Black wins")
+                break
+            elif result == 3 or self.turn_num > 70:
+                print("Draw")
+                break
+            if self.turn == "w":
+                moves.append(str(self.turn_num) + '.')
+            if self.turn == "w":
+                if rand_side == 1:
+                    move = bot1.random_move(self.board)
+                else:
+                    move = bot1.best_move(self.board, self.turn_num)
+                if move:
+                    self.move(*move, "Q")
+                    moves.append(self.translate_move(move))
+            else:
+                if rand_side == 2:
+                    move = bot2.random_move(self.board)
+                else:
+                    move = bot2.best_move(self.board, self.turn_num)
+                if move:
+                    self.move(*move, "Q")
+                    moves.append(self.translate_move(move))
+            if self.turn == "b":
+                self.turn_num += 1
+        return ' '.join(moves)        
 
 
 if __name__ == "__main__":
     game = ChessGame()
-    game.game_start()
+    print(game.simulate_game(1))
 
         

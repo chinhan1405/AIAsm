@@ -1,7 +1,6 @@
 from board import Board
 from pieces import *
 from evaluator import ChessEvaluator
-import math
 import random
 
 class ChessBot:
@@ -21,14 +20,14 @@ class ChessBot:
         Returns:
             int: The evaluation of the board.
         '''
-        return ChessEvaluator.evaluate(board, turn_num)
+        return ChessEvaluator.evaluate(board)
      
     def _evaluate_move(self, board:Board, move:tuple[int,int,int,int]) -> int:
             board_copy = board.create_board_copy()
             board_copy.move(*move, "Q")
             return self.evaluate(board_copy, self.turn_num)
 
-    def sort_moves(self, board:Board, moves:list[tuple[int,int,int,int]], ascending) -> list[tuple[int,int,int,int]]:
+    def sort_moves(self, board:Board, moves:list[tuple[int,int,int,int]], ascending: bool = True) -> list[tuple[int,int,int,int]]:
         return sorted(moves, key=lambda move: self._evaluate_move(board, move), reverse=not ascending)
     
     def _move_translate(self, move:tuple[int,int,int,int]) -> str:
@@ -53,8 +52,8 @@ class ChessBot:
         all_moves = board.get_all_moves("w" if maximizing else "b")
         if len(all_moves) == 0:
             return self.evaluate(board, self.turn_num), None
-        if depth != self.level:
-            all_moves = self.sort_moves(board, all_moves, not maximizing)[:2]
+        if depth == self.level:
+            all_moves = self.sort_moves(board, all_moves, not maximizing)
         best_score = -10000 if maximizing else 10000
         best_move = None
         for move in all_moves:
@@ -63,8 +62,6 @@ class ChessBot:
             self.turn_num += 1
             eval, _ = self.minimax(board_copy, depth - 1, alpha, beta, not maximizing)
             self.turn_num -= 1
-            if depth==self.level:
-                print(eval, str(board.board[move[0]][move[1]]), self._move_translate(move))
             if maximizing:
                 if eval >= best_score:
                     best_score = eval
@@ -89,9 +86,22 @@ class ChessBot:
         Returns:
             tuple[int,int,int,int]: The best move for the bot.
         '''
-        print(self.evaluate(board, turn_num))
         self.turn_num = turn_num
         score, move = self.minimax(board, self.level, -10000, 10000, self.color=="w")
         return move
+    
+    def random_move(self, board:Board) -> tuple[int,int,int,int]:
+        '''Return a random move from all possible moves.
+        
+        Args:
+            board (Board): The board to evaluate.
+        
+        Returns:
+            tuple[int,int,int,int]: A random move.
+        '''
+        if board.match_result() != 0:
+            return
+        all_moves = board.get_all_moves(self.color)
+        return random.choice(all_moves)
 
         

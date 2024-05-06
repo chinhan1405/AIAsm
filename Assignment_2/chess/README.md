@@ -1,7 +1,25 @@
 # How to run
 
+To play versus bot:
+
 ```
-py game.py
+py chess.py play
+```
+
+To simulate a game between 2 bot with intelligence:
+
+```
+py chess.py sim <level:1-3>
+```
+
+To simulate a game between bot versus random moves:
+
+```
+py chess.py sim <level:1-3> white
+```
+
+```
+py chess.py sim <level:1-3> black
 ```
 
 # Game played
