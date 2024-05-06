@@ -77,3 +77,6 @@ Level 4, White:
 
 # About (Vietnamese)
 
+Với nhược điểm về độ phức tạp cao (n^d, trong đó n là số lượng nước đi hợp lệ, d là chiều sâu của thuật toán Minimax), thời gian để phân tích các nước đi với chiều sâu lớn trở nên rất lâu. Hiện tại, tác giả khuyến nghị độ sâu của giải thuật tối đa nên là 3 để đảm bảo thời gian tìm kiếm không quá lâu.
+
+Về mặt không gian, vì sử dụng deep copy để tạo ra bản sao của bàn cờ mỗi khi cần phân tích một nước cờ mới nên độ phức tạp về mặt không gian cũng là n^d.
